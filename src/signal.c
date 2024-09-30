@@ -1,3 +1,5 @@
+#include <FreeRTOS.h>
+#include <semphr.h>
 #include "signaling.h"
 
 void signal_handle_calculation(SemaphoreHandle_t request, SemaphoreHandle_t response, struct signal_data *data) {
@@ -6,14 +8,16 @@ void signal_handle_calculation(SemaphoreHandle_t request, SemaphoreHandle_t resp
         data->output = data->input + 5;
         xSemaphoreGive(response);
     }
-    else
+    else {
         return;
+    }
 }
 
 BaseType_t signal_request_calculate(SemaphoreHandle_t request, SemaphoreHandle_t response, struct signal_data *data) {
 
     xSemaphoreGive(request);
-    if (xSemaphoreTake(response, portMAX_DELAY) == pdTRUE) {
+    // Wait time is arbitrarily chosen (10,000)
+    if (xSemaphoreTake(response, 10000) == pdTRUE) {
         return pdTRUE;
     }
     else {
