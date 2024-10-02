@@ -134,6 +134,7 @@ void runner_thread (__unused void *args)
 int main (void)
 {
     stdio_init_all();
+    sleep_ms(5000); // wait to connect to PICO to read output
     hard_assert(cyw43_arch_init() == PICO_OK);
     printf("Launching runner\n");
     xTaskCreate(runner_thread, "TestRunner",
